@@ -14,13 +14,14 @@ coursier fetch -e 2.12.8 \
   io.github.stanch::reftree:1.4.0 \
   org.typelevel::squants:1.4.0
 
-# We have to build vegas locally until we have a 2.12 release (https://github.com/vegas-viz/Vegas/issues/106)
+# We have to build Vegas locally until we have a 2.12 release (https://github.com/vegas-viz/Vegas/issues/106)
 COURSIER_EXPERIMENTAL=1 ./coursier install sbt-launcher
 COURSIER_EXPERIMENTAL=1 $(./coursier install-path) >> $HOME/.bashrc && source $HOME/.bashrc
 git clone https://github.com/vegas-viz/Vegas.git
 cd Vegas
 sbt '++2.12.8 publishLocal'
 cd ..
+rm -rf Vegas
 
 # Install almond for Scala 2.12
 SCALA_VERSION=2.12.8 ALMOND_VERSION=0.5.0
@@ -50,11 +51,6 @@ SCALA_VERSION=2.11.12 ALMOND_VERSION=0.5.0
   --copy-launcher \
   --metabrowse
 rm -f almond-scala-2.11
-
-# Install required Jupyter/JupyterLab extensions
-jupyter labextension install @jupyterlab/plotly-extension
-jupyter contrib nbextension install --user
-jupyter nbextension enable splitcell/splitcell
 
 # Set indentation to two spaces
 JUPYTER_CONFIG_DIR=$(jupyter --config-dir)
@@ -87,3 +83,11 @@ cat > $JUPYTER_CONFIG_DIR/lab/user-settings/@jupyterlab/fileeditor-extension/plu
     }
 }
 EOF
+
+# Install required Jupyter/JupyterLab extensions
+jupyter labextension install @jupyterlab/plotly-extension
+jupyter contrib nbextension install --user
+jupyter nbextension enable splitcell/splitcell
+
+# Workaround for https://github.com/damianavila/RISE/issues/479
+cp rise.css $JUPYTER_CONFIG_DIR/custom/custom.css
