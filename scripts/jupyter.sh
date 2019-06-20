@@ -4,8 +4,9 @@ set -e
 # We have to build Vegas locally until we have a 2.12 release (https://github.com/vegas-viz/Vegas/issues/106)
 export COURSIER_EXPERIMENTAL=1
 ./coursier install sbt-launcher
-git clone https://github.com/vegas-viz/Vegas.git
+git clone https://github.com/sbrunk/Vegas.git
 cd Vegas
+git checkout spark-212
 $(../coursier install-path)/sbt '++2.12.8 spark/publishLocal'
 cd ..
 rm -rf Vegas
