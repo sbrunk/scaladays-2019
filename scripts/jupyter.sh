@@ -3,12 +3,10 @@ set -e
 
 # We have to build Vegas locally until we have a 2.12 release (https://github.com/vegas-viz/Vegas/issues/106)
 export COURSIER_EXPERIMENTAL=1
-echo "export PATH=$PATH:$(./coursier install-path)" >> $HOME/.bashrc && source $HOME/.bashrc
-echo $PATH
 ./coursier install sbt-launcher
 git clone https://github.com/vegas-viz/Vegas.git
 cd Vegas
-$(../coursier install-path)/sbt '++2.12.8 publishLocal'
+$(../coursier install-path)/sbt '++2.12.8 spark/publishLocal'
 cd ..
 rm -rf Vegas
 
