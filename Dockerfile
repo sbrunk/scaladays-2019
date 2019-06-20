@@ -5,6 +5,6 @@ USER root
 RUN apt-get update && apt-get install -y curl graphviz libopenjfx-java=8u161-b12-1ubuntu2 openjfx=8u161-b12-1ubuntu2
 
 USER $NB_USER
-COPY . $HOME
+COPY --chown=1000:100 . $HOME/
 RUN scripts/coursier.sh
 RUN scripts/jupyter.sh
