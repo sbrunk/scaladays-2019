@@ -1,25 +1,14 @@
 #!/bin/bash
-
-sudo apt install libopenjfx-java=8u161-b12-1ubuntu2
-
-# Install coursier
-curl -L -o coursier https://git.io/coursier-cli
-chmod +x coursier
-
-# Prefetch packages used in slides
-coursier fetch -e 2.12.8 \
-  org.apache.spark::spark-sql:2.4.3 \
-  sh.almond::almond-spark:0.5.0 \
-  org.plotly-scala::plotly-almond:0.7.0 \
-  io.github.stanch::reftree:1.4.0 \
-  org.typelevel::squants:1.4.0
+set -e
 
 # We have to build Vegas locally until we have a 2.12 release (https://github.com/vegas-viz/Vegas/issues/106)
-COURSIER_EXPERIMENTAL=1 ./coursier install sbt-launcher
-COURSIER_EXPERIMENTAL=1 $(./coursier install-path) >> $HOME/.bashrc && source $HOME/.bashrc
+export COURSIER_EXPERIMENTAL=1
+echo "export PATH=$PATH:$(./coursier install-path)" >> $HOME/.bashrc && source $HOME/.bashrc
+echo $PATH
+./coursier install sbt-launcher
 git clone https://github.com/vegas-viz/Vegas.git
 cd Vegas
-sbt '++2.12.8 publishLocal'
+$(../coursier install-path)/sbt '++2.12.8 publishLocal'
 cd ..
 rm -rf Vegas
 
@@ -85,9 +74,11 @@ cat > $JUPYTER_CONFIG_DIR/lab/user-settings/@jupyterlab/fileeditor-extension/plu
 EOF
 
 # Install required Jupyter/JupyterLab extensions
+pip install RISE jupyter_contrib_nbextensions
 jupyter labextension install @jupyterlab/plotly-extension
 jupyter contrib nbextension install --user
 jupyter nbextension enable splitcell/splitcell
 
 # Workaround for https://github.com/damianavila/RISE/issues/479
+mkdir $JUPYTER_CONFIG_DIR/custom
 cp rise.css $JUPYTER_CONFIG_DIR/custom/custom.css
