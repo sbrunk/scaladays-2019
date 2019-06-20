@@ -7,7 +7,7 @@ export COURSIER_EXPERIMENTAL=1
 git clone https://github.com/sbrunk/Vegas.git
 cd Vegas
 git checkout spark-212
-$(../coursier install-path)/sbt '++2.12.8 spark/publishLocal'
+$(../coursier install-path)/sbt '++2.12.8 publishLocal'
 cd ..
 rm -rf Vegas
 
