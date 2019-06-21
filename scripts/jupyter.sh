@@ -10,6 +10,7 @@ git checkout spark-212
 $(../coursier install-path)/sbt '++2.12.8 publishLocal'
 cd ..
 rm -rf Vegas
+./coursier fetch -e 2.12.8 --sources --default org.vegas-viz::vegas-spark:0.3.12-SNAPSHOT
 
 # Install almond for Scala 2.12
 SCALA_VERSION=2.12.8 ALMOND_VERSION=0.5.0
@@ -81,3 +82,6 @@ jupyter nbextension enable splitcell/splitcell
 # Workaround for https://github.com/damianavila/RISE/issues/479
 mkdir $JUPYTER_CONFIG_DIR/custom
 cp rise.css $JUPYTER_CONFIG_DIR/custom/custom.css
+
+# Run notebook to prefetch remaining deps and initialize the compiler cache
+jupyter nbconvert --to notebook --execute --allow-errors slides.ipynb
